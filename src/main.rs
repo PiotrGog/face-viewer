@@ -1,3 +1,5 @@
+use face_viewer::view_3d::create_and_run_window;
+
 fn main() {
-    println!("Hello, world!");
+    create_and_run_window();
 }
