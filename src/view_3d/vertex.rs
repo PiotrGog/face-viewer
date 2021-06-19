@@ -1,6 +1,6 @@
 #[derive(Clone, Copy)]
 pub struct Vertex {
-    position: [f32; 2],
+    pub position: [f32; 3],
 }
 
 implement_vertex!(Vertex, position);

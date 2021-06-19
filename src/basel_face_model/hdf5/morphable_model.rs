@@ -2,9 +2,9 @@ use super::ModelParams;
 use ndarray::Array1;
 
 pub struct MorphableModel {
-    color: ModelParams,
-    expression: ModelParams,
-    shape: ModelParams,
+    pub color: ModelParams,
+    pub expression: ModelParams,
+    pub shape: ModelParams,
 }
 
 impl MorphableModel {

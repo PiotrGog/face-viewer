@@ -1,5 +1,5 @@
-mod shaders;
-mod vertex;
+pub mod shaders;
+pub mod vertex;
 
 use glium::{glutin, Surface};
 
