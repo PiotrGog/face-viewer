@@ -26,11 +26,14 @@ mod test {
         }; 47439];
 
         let color = &model.color.mean;
-
+        let expression = &model.expression.mean;
         for (i, e) in vertices_arr.outer_iter().enumerate() {
-            vertices[i].position[0] = e.get(0).unwrap().to_owned();
-            vertices[i].position[1] = e.get(1).unwrap().to_owned();
-            vertices[i].position[2] = e.get(2).unwrap().to_owned();
+            vertices[i].position[0] =
+                e.get(0).unwrap().to_owned() + expression.get(i * 3).unwrap().to_owned();
+            vertices[i].position[1] =
+                e.get(1).unwrap().to_owned() + expression.get(i * 3 + 1).unwrap().to_owned();
+            vertices[i].position[2] =
+                e.get(2).unwrap().to_owned() + expression.get(i * 3 + 2).unwrap().to_owned();
 
             vertices[i].color[0] = color.get(i * 3).unwrap().to_owned();
             vertices[i].color[1] = color.get(i * 3 + 1).unwrap().to_owned();
