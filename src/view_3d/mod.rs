@@ -1,3 +1,4 @@
+pub mod normal;
 pub mod shaders;
 pub mod vertex;
 

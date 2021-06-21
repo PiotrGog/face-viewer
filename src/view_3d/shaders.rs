@@ -32,6 +32,7 @@ pub mod three_dim {
 
     in vec3 color;
     in vec3 position;
+    in vec3 normal;
     uniform mat4 rotation;
     uniform mat4 scale;
     out vec3 fs_color;
