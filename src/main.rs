@@ -1,8 +1,6 @@
 use face_viewer::{basel_face_model, view_3d::create_and_run_window};
 
 mod test {
-    use glium::{glutin, uniform, Surface};
-
     use face_viewer::{
         basel_face_model,
         view_3d::{
@@ -11,29 +9,36 @@ mod test {
             vertex::Vertex,
         },
     };
-    use ndarray::{Array2, Axis};
+    use glium::{glutin, uniform, Surface};
     pub fn run() {
         let model =
             basel_face_model::hdf5::load_from_file("resources/basel_face_model/model2019_bfm.h5")
                 .expect("aaaa");
 
         let vertices_arr = model.shape.representer_points.t();
+
+        println!("{:?}", vertices_arr);
+        println!("{:?}", model.calculate_shape());
+
         let mut vertices: [view_3d::vertex::Vertex; 47439] = [Vertex {
             position: [0.0, 0.0, 0.0],
+            color: [0.0, 1.0, 0.0],
         }; 47439];
+
+        let color = &model.color.mean;
 
         for (i, e) in vertices_arr.outer_iter().enumerate() {
             vertices[i].position[0] = e.get(0).unwrap().to_owned();
             vertices[i].position[1] = e.get(1).unwrap().to_owned();
             vertices[i].position[2] = e.get(2).unwrap().to_owned();
+
+            vertices[i].color[0] = color.get(i * 3).unwrap().to_owned();
+            vertices[i].color[1] = color.get(i * 3 + 1).unwrap().to_owned();
+            vertices[i].color[2] = color.get(i * 3 + 2).unwrap().to_owned();
+            println!("{:?}", vertices[i].color);
         }
 
         let indices_arr = model.shape.representer_cells.t();
-        println!("{:?}", indices_arr);
-        // let indices_arr = indices_arr.into_shape((3 * 94464, 1)).expect("msg");
-        // let indices_arr = indices_arr
-        //     .to_shape(((3 * 94464, 1), Order::RowMajor))
-        //     .expect("msg");
 
         let mut indices: [u32; 3 * 94464] = [0; 3 * 94464];
 
@@ -44,17 +49,13 @@ mod test {
         }
 
         println!("{},{},{}", indices[0], indices[1], indices[2]);
-        // for (i, e) in indices_arr.outer_iter().enumerate() {
-        //     indices[i] = e[0].to_owned() as u32;
-        // }
-        // return;
         let event_loop = glutin::event_loop::EventLoop::new();
         let window_builder = glutin::window::WindowBuilder::new();
         let context_builder = glutin::ContextBuilder::new();
         let display = glium::Display::new(window_builder, context_builder, &event_loop).unwrap();
 
         let positions = glium::VertexBuffer::new(&display, &vertices).unwrap();
-        // let normals = glium::VertexBuffer::new(&display, &teapot::NORMALS).unwrap();
+
         let indices = glium::IndexBuffer::new(
             &display,
             glium::index::PrimitiveType::TrianglesList,
@@ -117,7 +118,6 @@ mod test {
                 .unwrap();
 
             target.finish().unwrap();
-            // println!("Print");
         });
     }
 }
