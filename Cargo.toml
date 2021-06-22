@@ -10,6 +10,6 @@ edition = "2018"
 glium = "0.29.1"
 hdf5 = "0.7.1"
 nalgebra = "0.27.1"
-ndarray = "0.14.0"
+ndarray = {version="0.14.0", features=["blas-src"]}
 opencv = "0.53" # TODO: it is added for tests
 rand = "0.8.4"

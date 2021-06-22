@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 #[macro_use]
 extern crate glium;
+
 #[allow(unused_imports)]
 #[macro_use]
 extern crate ndarray;

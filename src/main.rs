@@ -12,7 +12,7 @@ mod test {
     use glium::{glutin, uniform, Surface};
     use ndarray::{Array2, ArrayView, ArrayView2};
     pub fn run() {
-        let model =
+        let mut model =
             basel_face_model::hdf5::load_from_file("resources/basel_face_model/model2019_bfm.h5")
                 .expect("aaaa");
 
@@ -63,6 +63,24 @@ mod test {
 
         let mut t = 0.0 as f32;
         event_loop.run(move |ev, _, control_flow| {
+            let shape_calc = model.calculate_shape();
+            let shape_arr: ArrayView2<f32> = shape_calc.view().into_shape((142317 / 3, 3)).unwrap();
+            let expression_calc = model.calculate_expression();
+            let expression_arr = expression_calc.view().into_shape((142317 / 3, 3)).unwrap();
+            let color_calc = model.calculate_color();
+            let color_arr = color_calc.view().into_shape((142317 / 3, 3)).unwrap();
+
+            for i in 0..(142317 / 3) {
+                shape_color[i] = Vertex {
+                    position: [
+                        shape_arr[(i, 0)] + expression_arr[(i, 0)],
+                        shape_arr[(i, 1)] + expression_arr[(i, 1)],
+                        shape_arr[(i, 2)] + expression_arr[(i, 2)],
+                    ],
+                    color: [color_arr[(i, 0)], color_arr[(i, 1)], color_arr[(i, 2)]],
+                }
+            }
+            let positions = glium::VertexBuffer::new(&display, &shape_color).unwrap();
             let next_frame_time =
                 std::time::Instant::now() + std::time::Duration::from_nanos(16_666_667);
             *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);

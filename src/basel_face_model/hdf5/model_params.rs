@@ -9,18 +9,25 @@ pub struct ModelParams {
     pub pca_variance: Array1<f32>,
     pub representer_cells: Array2<u32>,
     pub representer_points: Array2<f32>,
+    pub rescaled_pca_basis: Array2<f32>,
 }
 
 impl ModelParams {
     pub fn load_from_file(param: &str, file: &hdf5::File) -> hdf5::Result<ModelParams> {
+        let pca_basis: Array2<f32> =
+            Self::load_array(&file, &format!("{}{}", param, "/model/pcaBasis"))?;
+        let pca_variance: Array1<f32> =
+            Self::load_array(&file, &format!("{}{}", param, "/model/pcaVariance"))?;
+        let sqrt_of_variance = pca_variance.map(|x| x.sqrt());
+        let rescaled_pca_basis = &pca_basis / &sqrt_of_variance;
         Ok(ModelParams {
             mean: Self::load_array(&file, &format!("{}{}", param, "/model/mean"))?,
             noise_variance: Self::load_array(
                 &file,
                 &format!("{}{}", param, "/model/noiseVariance"),
             )?,
-            pca_basis: Self::load_array(&file, &format!("{}{}", param, "/model/pcaBasis"))?,
-            pca_variance: Self::load_array(&file, &format!("{}{}", param, "/model/pcaVariance"))?,
+            pca_basis: pca_basis,
+            pca_variance: pca_variance,
             representer_cells: Self::load_array(
                 &file,
                 &format!("{}{}", param, "/representer/cells"),
@@ -29,6 +36,7 @@ impl ModelParams {
                 &file,
                 &format!("{}{}", param, "/representer/points"),
             )?,
+            rescaled_pca_basis: rescaled_pca_basis,
         })
     }
 
