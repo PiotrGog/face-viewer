@@ -7,7 +7,7 @@ pub struct ModelParams {
     pub noise_variance: Array1<f32>,
     pub pca_basis: Array2<f32>,
     pub pca_variance: Array1<f32>,
-    pub representer_cells: Array2<i32>,
+    pub representer_cells: Array2<u32>,
     pub representer_points: Array2<f32>,
 }
 

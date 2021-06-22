@@ -32,9 +32,9 @@ impl MorphableModel {
     }
 
     fn calc_model_param(model_param: &ModelParams) -> Array1<f32> {
-        let mut result = model_param.pca_basis.dot(&model_param.pca_variance);
-        result += &model_param.mean;
-        result
+        let sqrt_of_variance = model_param.pca_variance.map(|x| x.sqrt());
+        let rescaled_pca_basis = &model_param.pca_basis / &sqrt_of_variance;
+        rescaled_pca_basis.dot(&model_param.pca_variance) + &model_param.mean
     }
 }
 
