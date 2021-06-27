@@ -2,7 +2,7 @@ use face_viewer::{basel_face_model, view_3d::create_and_run_window};
 
 mod test {
     use face_viewer::{
-        basel_face_model,
+        basel_face_model, control_panel,
         view_3d::{
             self,
             shaders::three_dim::{FRAGMENT_SHADER_SRC, VERTEX_SHADER_SRC},
@@ -11,17 +11,28 @@ mod test {
     };
     use glium::{glutin, uniform, Surface};
     use ndarray::{Array2, ArrayView, ArrayView2};
-    pub fn run() {
+    use std::sync::{Arc, Mutex};
+    pub fn run(
+        color: Arc<Mutex<ndarray::Array1<f32>>>,
+        expression: Arc<Mutex<ndarray::Array1<f32>>>,
+        shape: Arc<Mutex<ndarray::Array1<f32>>>,
+    ) {
         let mut model =
             basel_face_model::hdf5::load_from_file("resources/basel_face_model/model2019_bfm.h5")
                 .expect("aaaa");
 
-        let shape_arr = model.calculate_shape().into_shape((142317 / 3, 3)).unwrap();
-        let expression_arr = model
-            .calculate_expression()
+        let shape_arr = model
+            .calculate_shape(Arc::clone(&shape))
             .into_shape((142317 / 3, 3))
             .unwrap();
-        let color_arr = model.calculate_color().into_shape((142317 / 3, 3)).unwrap();
+        let expression_arr = model
+            .calculate_expression(Arc::clone(&expression))
+            .into_shape((142317 / 3, 3))
+            .unwrap();
+        let color_arr = model
+            .calculate_color(Arc::clone(&color))
+            .into_shape((142317 / 3, 3))
+            .unwrap();
         let mut shape_color = Vec::new();
 
         for i in 0..(142317 / 3) {
@@ -63,11 +74,11 @@ mod test {
 
         let mut t = 0.0 as f32;
         event_loop.run(move |ev, _, control_flow| {
-            let shape_calc = model.calculate_shape();
+            let shape_calc = model.calculate_shape(Arc::clone(&shape));
             let shape_arr: ArrayView2<f32> = shape_calc.view().into_shape((142317 / 3, 3)).unwrap();
-            let expression_calc = model.calculate_expression();
+            let expression_calc = model.calculate_expression(Arc::clone(&expression));
             let expression_arr = expression_calc.view().into_shape((142317 / 3, 3)).unwrap();
-            let color_calc = model.calculate_color();
+            let color_calc = model.calculate_color(Arc::clone(&color));
             let color_arr = color_calc.view().into_shape((142317 / 3, 3)).unwrap();
 
             for i in 0..(142317 / 3) {
@@ -135,12 +146,40 @@ mod test {
             target.finish().unwrap();
         });
     }
+    pub fn run_gui() {
+        use relm::Widget;
+        use std::sync::{Arc, Mutex};
+        use std::thread;
+
+        let color = Arc::new(Mutex::new(ndarray::Array1::zeros(199)));
+        let expression = Arc::new(Mutex::new(ndarray::Array1::zeros(100)));
+        let shape = Arc::new(Mutex::new(ndarray::Array1::zeros(199)));
+
+        let color_control_panel_thread_handle = Arc::clone(&color);
+        let expression_control_panel_thread_handle = Arc::clone(&expression);
+        let shape_control_panel_thread_handle = Arc::clone(&shape);
+        let control_panel_thread = thread::spawn(move || {
+            control_panel::Column::run((
+                color_control_panel_thread_handle,
+                expression_control_panel_thread_handle,
+                shape_control_panel_thread_handle,
+            ))
+            .unwrap();
+        });
+
+        let color_morphable_model_thread_handle = Arc::clone(&color);
+        let expression_morphable_model_thread_handle = Arc::clone(&expression);
+        let shape_morphable_model_thread_handle = Arc::clone(&shape);
+        run(
+            color_morphable_model_thread_handle,
+            expression_morphable_model_thread_handle,
+            shape_morphable_model_thread_handle,
+        );
+
+        control_panel_thread.join().unwrap();
+    }
 }
 
-fn main() -> hdf5::Result<()> {
-    test::run();
-    // create_and_run_window();
-    // let model =
-    //     basel_face_model::hdf5::load_from_file("resources/basel_face_model/model2019_bfm.h5")?;
-    Ok(())
+fn main() {
+    test::run_gui();
 }
