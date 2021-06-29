@@ -26,15 +26,12 @@ impl MorphableModel {
         Self::calc_model_param(&self.color, coefficients)
     }
     pub fn calculate_expression(
-        &mut self,
+        &self,
         coefficients: Arc<Mutex<ndarray::Array1<f32>>>,
     ) -> Array1<f32> {
         Self::calc_model_param(&self.expression, coefficients)
     }
-    pub fn calculate_shape(
-        &mut self,
-        coefficients: Arc<Mutex<ndarray::Array1<f32>>>,
-    ) -> Array1<f32> {
+    pub fn calculate_shape(&self, coefficients: Arc<Mutex<ndarray::Array1<f32>>>) -> Array1<f32> {
         Self::calc_model_param(&self.shape, coefficients)
     }
 

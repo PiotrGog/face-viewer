@@ -15,7 +15,7 @@ pub struct Model {
 }
 
 #[relm_derive::widget]
-impl relm::Widget for Column {
+impl relm::Widget for ControlPanel {
     fn model(
         _: &relm::Relm<Self>,
         coefficients: (
@@ -33,10 +33,7 @@ impl relm::Widget for Column {
 
     fn update(&mut self, event: WinMsg) {
         match event {
-            WinMsg::Quit => {
-                println!("Msg::Quit");
-                gtk::main_quit()
-            }
+            WinMsg::Quit => gtk::main_quit(),
         }
     }
 
@@ -44,7 +41,7 @@ impl relm::Widget for Column {
         gtk::Window {
             property_default_height: 650,
             property_default_width: 1000,
-            title: "Tasks Manager",
+            title: "Control panel",
 
             gtk::Box {
                 orientation: gtk::Orientation::Vertical,
@@ -104,8 +101,6 @@ impl relm::Widget for Column {
     }
 
     fn init_view(&mut self) {
-        println!("Init view");
-
         Self::create_sliders(
             -3.0,
             3.0,

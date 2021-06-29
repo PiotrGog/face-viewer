@@ -7,5 +7,5 @@ extern crate glium;
 extern crate ndarray;
 
 pub mod basel_face_model;
-pub mod view_3d;
 pub mod control_panel;
+pub mod view_3d;
