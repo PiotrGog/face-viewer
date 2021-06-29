@@ -1,0 +1,166 @@
+1. One occurence
+
+RUST_BACKTRACE=full cargo run --release
+   Compiling face-viewer v0.1.0 (face-viewer)
+    Finished release [optimized] target(s) in 10.91s
+     Running `target/release/face-viewer`
+thread 'main' panicked at 'Failed to open input method: PotentialInputMethods {
+    xmodifiers: None,
+    fallbacks: [
+        PotentialInputMethod {
+            name: "@im=local",
+            successful: Some(
+                false,
+            ),
+        },
+        PotentialInputMethod {
+            name: "@im=",
+            successful: Some(
+                false,
+            ),
+        },
+    ],
+    _xim_servers: Err(
+        GetPropertyError(
+            TypeMismatch(
+                0,
+            ),
+        ),
+    ),
+}', .cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.24.0/src/platform_impl/linux/x11/mod.rs:134:17
+stack backtrace:
+   0:     0x55be37d09810 - std::backtrace_rs::backtrace::libunwind::trace::h63b7a90188ab5fb3
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/../../backtrace/src/backtrace/libunwind.rs:90:5
+   1:     0x55be37d09810 - std::backtrace_rs::backtrace::trace_unsynchronized::h80aefbf9b851eca7
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/../../backtrace/src/backtrace/mod.rs:66:5
+   2:     0x55be37d09810 - std::sys_common::backtrace::_print_fmt::hbef05ae4237a4d72
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:67:5
+   3:     0x55be37d09810 - <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt::h28abce2fdb9884c2
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:46:22
+   4:     0x55be37d2890f - core::fmt::write::h3b84512577ca38a8
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/core/src/fmt/mod.rs:1092:17
+   5:     0x55be37d06d32 - std::io::Write::write_fmt::h465f8feea02e2aa1
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/io/mod.rs:1572:15
+   6:     0x55be37d0b955 - std::sys_common::backtrace::_print::h525280ee0d29bdde
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:49:5
+   7:     0x55be37d0b955 - std::sys_common::backtrace::print::h1f0f5b9f3ef8fb78
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:36:9
+   8:     0x55be37d0b955 - std::panicking::default_hook::{{closure}}::ha5838f6faa4a5a8f
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:208:50
+   9:     0x55be37d0b403 - std::panicking::default_hook::hfb9fe98acb0dcb3b
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:225:9
+  10:     0x55be37d0bf5d - std::panicking::rust_panic_with_hook::hb89f5f19036e6af8
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:591:17
+  11
+(face-viewer:15425): Gtk-WARNING **: 22:57:50.554: Theme parsing error: gtk.css:73:46: The style property GtkScrolledWindow:scrollbars-within-bevel is deprecated and shouldn't be used anymore. It will be removed in a future version
+:     0x55be37c05aeb - std::panicking::begin_panic::{{closure}}::hd0e2c3f28067e0f9
+  12:     0x55be37c0581c - std::sys_common::backtrace::__rust_end_short_backtrace::hbc1feebd9fd06214
+  13:     0x55be37adff00 - std::panicking::begin_panic::he0e8063365a58907
+  14:     0x55be37c12ceb - winit::platform_impl::platform::x11::EventLoop<T>::new::h956b2bb8c2145d35
+  15:     0x55be37c0a5e7 - winit::platform_impl::platform::EventLoop<T>::new_x11_any_thread::h1ead3d9f2ef90d38
+  16:     0x55be37c0a0d2 - winit::platform_impl::platform::EventLoop<T>::new::hd8101e3f62a0d09d
+  17:     0x55be37c1e5ea - winit::event_loop::EventLoop<()>::new::h4f09c4085919911d
+  18:     0x55be37af5da4 - face_viewer::view_3d::create_and_run_window::ha3d334b0b89b871f
+  19:     0x55be37ae6e88 - face_viewer::main::h9ba963a1f7e945c3
+  20:     0x55be37ae7b63 - std::sys_common::backtrace::__rust_begin_short_backtrace::h7237e99ec7495061
+  21:     0x55be37ae6629 - std::rt::lang_start::{{closure}}::h00f56482cf59c9ce
+  22:     0x55be37d0c35a - core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once::h44574effd2120c86
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/core/src/ops/function.rs:259:13
+  23:     0x55be37d0c35a - std::panicking::try::do_call::h10b0bd4879c8dfb0
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:379:40
+  24:     0x55be37d0c35a - std::panicking::try::h60c6780d33419e92
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:343:19
+  25:     0x55be37d0c35a - std::panic::catch_unwind::h111f33e08c52e2ce
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panic.rs:431:14
+  26:     0x55be37d0c35a - std::rt::lang_start_internal::h126f2e09345dbfda
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/rt.rs:51:25
+  27:     0x55be37ae70d2 - main
+  28:     0x7fe1b3fabb25 - __libc_start_main
+  29:     0x55be37ae633e - _start
+  30:                0x0 - <unknown>
+
+
+2. Second occurence
+
+RUST_BACKTRACE=full cargo run --release
+Other case:
+    Finished release [optimized] target(s) in 10.46s
+     Running `target/release/face-viewer`
+thread 'main' panicked at 'Failed to open input method: PotentialInputMethods {
+    xmodifiers: None,
+    fallbacks: [
+        PotentialInputMethod {
+            name: "@im=local",
+            successful: Some(
+                false,
+            ),
+        },
+        PotentialInputMethod {
+            name: "@im=",
+            successful: Some(
+                false,
+            ),
+        },
+    ],
+    _xim_servers: Err(
+        GetPropertyError(
+            TypeMismatch(
+                0,
+            ),
+        ),
+    ),
+}', .cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.24.0/src/platform_impl/linux/x11/mod.rs:134:17
+stack backtrace:
+   0:     0x55c79892e6a0 - std::backtrace_rs::backtrace::libunwind::trace::h63b7a90188ab5fb3
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/../../backtrace/src/backtrace/libunwind.rs:90:5
+   1:     0x55c79892e6a0 - std::backtrace_rs::backtrace::trace_unsynchronized::h80aefbf9b851eca7
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/../../backtrace/src/backtrace/mod.rs:66:5
+   2:     0x55c79892e6a0 - std::sys_common::backtrace::_print_fmt::hbef05ae4237a4d72
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:67:5
+   3:     0x55c79892e6a0 - <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt::h28abce2fdb9884c2
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:46:22
+   4:     0x55c79894d79f - core::fmt::write::h3b84512577ca38a8
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/core/src/fmt/mod.rs:1092:17
+   5:     0x55c79892bbc2 - std::io::Write::write_fmt::h465f8feea02e2aa1
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/io/mod.rs:1572:15
+   6:     0x55c7989307e5 - std::sys_common::backtrace::_print::h525280ee0d29bdde
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:49:5
+   7:     0x55c7989307e5 - std::sys_common::backtrace::print::h1f0f5b9f3ef8fb78
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/sys_common/backtrace.rs:36:9
+   8:     0x55c7989307e5 - std::panicking::default_hook::{{closure}}::ha5838f6faa4a5a8f
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:208:50
+   9:     0x55c798930293 - std::panicking::default_hook::hfb9fe98acb0dcb3b
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:225:9
+  10:     0x55c798930ded - std::panicking::rust_panic_with_hook::hb89f5f19036e6af8
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:591:17
+  11:     0x55c79882acfb - std::panicking::begin_panic::{{closure}}::hd0e2c3f28067e0f9
+  12:     0x55c79882aa2c - std::sys_common::backtrace::__rust_end_short_backtrace::hbc1feebd9fd06214
+  13:     0x55c7987437d0 - std::panicking::begin_panic::he0e8063365a58907
+  14:     0x55c798837efb - winit::platform_impl::platform::x11::EventLoop<T>::new::h956b2bb8c2145d35
+  15:     0x55c79882f7f7 - winit::platform_impl::platform::EventLoop<T>::new_x11_any_thread::h1ead3d9f2ef90d38
+  16:     0x55c79882f2e2 - winit::platform_impl::platform::EventLoop<T>::new::hd8101e3f62a0d09d
+  17:     0x55c7988437fa - winit::event_loop::EventLoop<()>::new::h4f09c4085919911d
+  18:     0x55c79875b182 - face_viewer::view_3d::create_and_run_window::ha3d334b0b89b871f
+  19:     0x55c79874a2f8 - face_viewer::main::h9ba963a1f7e945c3
+  20:     0x55c79874afd3 - std::sys_common::backtrace::__rust_begin_short_backtrace::h7237e99ec7495061
+  21:     0x55c798749a99 - std::rt::lang_start::{{closure}}::h00f56482cf59c9ce
+  22:     0x55c7989311ea - core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once::h44574effd2120c86
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/core/src/ops/function.rs:259:13
+  23:     0x55c7989311ea - std::panicking::try::do_call::h10b0bd4879c8dfb0
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:379:40
+  24:     0x55c7989311ea - std::panicking::try::h60c6780d33419e92
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panicking.rs:343:19
+  25:     0x55c7989311ea - std::panic::catch_unwind::h111f33e08c52e2ce
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/panic.rs:431:14
+  26:     0x55c7989311ea - std::rt::lang_start_internal::h126f2e09345dbfda
+                               at /rustc/9bc8c42bb2f19e745a63f3445f1ac248fb015e53/library/std/src/rt.rs:51:25
+  27:     0x55c79874a542 - main
+  28:     0x7f2f4d670b25 - __libc_start_main
+  29:     0x55c7987497ae - _start
+  30:                0x0 - <unknown>
+
+
+~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=
+
+Found github related issues:
+https://github.com/rust-windowing/winit/issues/636

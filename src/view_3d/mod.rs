@@ -77,6 +77,7 @@ pub fn create_and_run_window(
         match ev {
             glutin::event::Event::WindowEvent { event, .. } => match event {
                 glutin::event::WindowEvent::CloseRequested => {
+                    println!("glutin::event::WindowEvent::CloseRequested");
                     *control_flow = glutin::event_loop::ControlFlow::Exit;
                     return;
                 }
