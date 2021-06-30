@@ -128,6 +128,9 @@ name = "blas-src"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a25f136d1bcc6fc28330077511a0646aaf75bc894e5532b1a33a93d814272328"
+dependencies = [
+ "openblas-src",
+]
 
 [[package]]
 name = "block"
@@ -169,6 +172,15 @@ checksum = "0b036167e76041694579972c28cf4877b4f92da222560ddb49008937b6a6727c"
 dependencies = [
  "log",
  "nix 0.18.0",
+]
+
+[[package]]
+name = "cblas-sys"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6feecd82cce51b0204cf063f0041d69f24ce83f680d87514b004248e7b0fa65"
+dependencies = [
+ "libc",
 ]
 
 [[package]]
@@ -413,11 +425,13 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 name = "face-viewer"
 version = "0.1.0"
 dependencies = [
+ "blas-src",
  "glium",
  "gtk",
  "hdf5",
  "nalgebra",
  "ndarray",
+ "openblas-src",
  "rand",
  "relm",
  "relm-derive",
@@ -1189,6 +1203,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c0d5c9540a691d153064dc47a4db2504587a75eae07bf1d73f7a596ebc73c04"
 dependencies = [
  "blas-src",
+ "cblas-sys",
  "matrixmultiply 0.2.4",
  "num-complex 0.3.1",
  "num-integer",
@@ -1379,6 +1394,12 @@ name = "once_cell"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "692fcb63b64b1758029e0a96ee63e049ce8c5948587f2f7208df04625e5f6b56"
+
+[[package]]
+name = "openblas-src"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "84629d1d4f9f40d3f9e4756dae33c6af50d3c2fcc186558dac65bf55141ade6b"
 
 [[package]]
 name = "osmesa-sys"
