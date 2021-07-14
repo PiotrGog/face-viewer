@@ -6,13 +6,15 @@ use crate::basel_face_model;
 
 use glium::{glutin, uniform, Surface};
 
-use std::sync::{Arc, Mutex};
+use std::sync::{atomic::AtomicBool, Arc, Mutex};
 
 pub fn create_and_run_window(
     model: basel_face_model::hdf5::morphable_model::MorphableModel,
     color: Arc<Mutex<ndarray::Array1<f32>>>,
     expression: Arc<Mutex<ndarray::Array1<f32>>>,
     shape: Arc<Mutex<ndarray::Array1<f32>>>,
+    is_running: Arc<AtomicBool>,
+    model_updated: Arc<AtomicBool>,
 ) {
     let rotation = [
         [-1.0, 0.0, 0.0, 0.0],
@@ -33,7 +35,9 @@ pub fn create_and_run_window(
 
     let event_loop = glutin::event_loop::EventLoop::new();
     let window_builder = glutin::window::WindowBuilder::new().with_title("Model View Window");
-    let context_builder = glutin::ContextBuilder::new().with_depth_buffer(24);
+    let context_builder = glutin::ContextBuilder::new()
+        .with_depth_buffer(24)
+        .with_vsync(true);
     let display = glium::Display::new(window_builder, context_builder, &event_loop).unwrap();
     let program = glium::Program::from_source(
         &display,
@@ -69,6 +73,7 @@ pub fn create_and_run_window(
     let mut shape_and_color_buffer =
         glium::VertexBuffer::dynamic(&display, &shape_and_color).unwrap();
 
+    model_updated.store(true, std::sync::atomic::Ordering::Relaxed);
     event_loop.run(move |ev, _, control_flow| {
         let next_frame_time =
             std::time::Instant::now() + std::time::Duration::from_nanos(16_666_667);
@@ -77,7 +82,6 @@ pub fn create_and_run_window(
         match ev {
             glutin::event::Event::WindowEvent { event, .. } => match event {
                 glutin::event::WindowEvent::CloseRequested => {
-                    println!("glutin::event::WindowEvent::CloseRequested");
                     *control_flow = glutin::event_loop::ControlFlow::Exit;
                     return;
                 }
@@ -87,27 +91,34 @@ pub fn create_and_run_window(
             },
             _ => (),
         }
+        if !is_running.load(std::sync::atomic::Ordering::Relaxed) {
+            *control_flow = glutin::event_loop::ControlFlow::Exit;
+            return;
+        }
 
-        update_shape_and_color_buffer(
-            &mut shape_and_color_buffer,
-            &model,
-            Arc::clone(&color),
-            Arc::clone(&expression),
-            Arc::clone(&shape),
-            color_parameters_size,
-            expression_parameters_size,
-            shape_parameters_size,
-            &mut shape_and_color,
-        );
+        if model_updated.load(std::sync::atomic::Ordering::Relaxed) {
+            update_shape_and_color_buffer(
+                &mut shape_and_color_buffer,
+                &model,
+                Arc::clone(&color),
+                Arc::clone(&expression),
+                Arc::clone(&shape),
+                color_parameters_size,
+                expression_parameters_size,
+                shape_parameters_size,
+                &mut shape_and_color,
+            );
 
-        draw(
-            &display,
-            &shape_and_color_buffer,
-            &indices_buffer,
-            &program,
-            &uniforms,
-            &params,
-        );
+            draw(
+                &display,
+                &shape_and_color_buffer,
+                &indices_buffer,
+                &program,
+                &uniforms,
+                &params,
+            );
+            model_updated.store(false, std::sync::atomic::Ordering::Relaxed);
+        }
     });
 }
 

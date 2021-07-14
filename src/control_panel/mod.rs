@@ -2,16 +2,21 @@ use gtk;
 use gtk::prelude::*;
 use relm_derive;
 
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering::Relaxed;
 use std::sync::{Arc, Mutex};
 
 #[derive(relm_derive::Msg)]
 pub enum WinMsg {
     Quit,
 }
+
 pub struct Model {
     color: Arc<Mutex<ndarray::Array1<f32>>>,
     expression: Arc<Mutex<ndarray::Array1<f32>>>,
     shape: Arc<Mutex<ndarray::Array1<f32>>>,
+    is_running: Arc<AtomicBool>,
+    model_updated: Arc<AtomicBool>,
 }
 
 #[relm_derive::widget]
@@ -22,18 +27,25 @@ impl relm::Widget for ControlPanel {
             Arc<Mutex<ndarray::Array1<f32>>>,
             Arc<Mutex<ndarray::Array1<f32>>>,
             Arc<Mutex<ndarray::Array1<f32>>>,
+            Arc<AtomicBool>,
+            Arc<AtomicBool>,
         ),
     ) -> Model {
         return Model {
             color: coefficients.0,
             expression: coefficients.1,
             shape: coefficients.2,
+            is_running: coefficients.3,
+            model_updated: coefficients.4,
         };
     }
 
     fn update(&mut self, event: WinMsg) {
         match event {
-            WinMsg::Quit => gtk::main_quit(),
+            WinMsg::Quit => {
+                self.model.is_running.store(false, Relaxed);
+                gtk::main_quit()
+            }
         }
     }
 
@@ -106,18 +118,21 @@ impl relm::Widget for ControlPanel {
             3.0,
             &mut self.widgets.color_sliders,
             &mut self.model.color,
+            &self.model.model_updated,
         );
         Self::create_sliders(
             -3.0,
             3.0,
             &mut self.widgets.shape_sliders,
             &mut self.model.shape,
+            &self.model.model_updated,
         );
         Self::create_sliders(
             -3.0,
             3.0,
             &mut self.widgets.expression_sliders,
             &mut self.model.expression,
+            &self.model.model_updated,
         );
     }
 
@@ -126,6 +141,7 @@ impl relm::Widget for ControlPanel {
         max: f64,
         sliders_container: &mut gtk::Box,
         coefficients: &mut Arc<Mutex<ndarray::Array1<f32>>>,
+        model_updated: &Arc<AtomicBool>,
     ) {
         let num = coefficients.lock().unwrap();
 
@@ -138,11 +154,13 @@ impl relm::Widget for ControlPanel {
                 .build();
 
             let coefficients = Arc::clone(&coefficients);
+            let is_updated = Arc::clone(&model_updated);
             slider.connect_change_value(move |_, _, x| {
                 let x = if x < min { min } else { x };
                 let x = if x > max { max } else { x };
                 let mut num = coefficients.lock().unwrap();
                 num[index as usize] = x as f32;
+                is_updated.store(true, Relaxed);
                 gtk::Inhibit(false)
             });
             sliders_container.add::<gtk::Scale>(&slider);
